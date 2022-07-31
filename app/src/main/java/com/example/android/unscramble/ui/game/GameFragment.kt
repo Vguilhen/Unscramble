@@ -15,7 +15,7 @@
  */
 
 package com.example.android.unscramble.ui.game
-
+import GameViewModel
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -63,8 +63,7 @@ class GameFragment : Fragment() {
         updateNextWordOnScreen()
         binding.score.text = getString(R.string.score, 0)
         binding.wordCount.text = getString(
-            R.string.word_count, 0, MAX_NO_OF_WORDS
-        )
+            R.string.word_count, 0, MAX_NO_OF_WORDS)
     }
 
     /*
@@ -74,6 +73,7 @@ class GameFragment : Fragment() {
     */
     private fun onSubmitWord() {
         val playerWord = binding.textInputEditText.text.toString()
+
         if (viewModel.isUserWordCorrect(playerWord)) {
             setErrorTextField(false)
             if (viewModel.nextWord()) {
@@ -87,8 +87,8 @@ class GameFragment : Fragment() {
     }
 
     /*
-     * Skips the current word without changing the score.
-     */
+    * Skips the current word without changing the score.
+    */
     private fun onSkipWord() {
         if (viewModel.nextWord()) {
             setErrorTextField(false)
@@ -125,9 +125,9 @@ class GameFragment : Fragment() {
     }
 
     /*
-    * Re-initializes the data in the ViewModel and updates the views with the new data, to
-    * restart the game.
-    */
+     * Re-initializes the data in the ViewModel and updates the views with the new data, to
+     * restart the game.
+     */
     private fun restartGame() {
         viewModel.reinitializeData()
         setErrorTextField(false)
@@ -135,8 +135,8 @@ class GameFragment : Fragment() {
     }
 
     /*
-    * Exits the game.
-    */
+     * Exits the game.
+     */
     private fun exitGame() {
         activity?.finish()
     }
@@ -164,5 +164,8 @@ class GameFragment : Fragment() {
      */
     private fun updateNextWordOnScreen() {
         binding.textViewUnscrambledWord.text = viewModel.currentScrambledWord
+        binding.score.text = getString(R.string.score, viewModel.score)
+        binding.wordCount.text = getString(
+            R.string.word_count, viewModel.currentWordCount, MAX_NO_OF_WORDS)
     }
 }
