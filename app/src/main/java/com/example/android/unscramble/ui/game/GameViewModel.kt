@@ -1,10 +1,13 @@
+package com.example.android.unscramble.ui.game
+
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.TtsSpan
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.example.android.unscramble.ui.game.MAX_NO_OF_WORDS
-import com.example.android.unscramble.ui.game.SCORE_INCREASE
-import com.example.android.unscramble.ui.game.allWordsList
 
 /**
  * ViewModel containing the app data and methods to process the data
@@ -19,21 +22,34 @@ class GameViewModel : ViewModel(){
         get() = _currentWordCount
 
     private val _currentScrambledWord = MutableLiveData<String>()
-    val currentScrambledWord: LiveData<String>
-        get() = _currentScrambledWord
+    val currentScrambledWord: LiveData<Spannable> = Transformations.map(_currentScrambledWord) {
+        if (it == null) {
+            SpannableString("")
+        } else {
+            val scrambledWord = it.toString()
+            val spannable: Spannable = SpannableString(scrambledWord)
+            spannable.setSpan(
+                TtsSpan.VerbatimBuilder(scrambledWord).build(),
+                0,
+                scrambledWord.length,
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            )
+            spannable
+        }
+    }
 
     // List of words used in the game
     private var wordsList: MutableList<String> = mutableListOf()
     private lateinit var currentWord: String
 
     init {
-        Log.d("GameFragment", "GameViewModel created!")
+        Log.d("GameFragment", "com.example.android.unscramble.ui.game.GameViewModel created!")
         getNextWord()
     }
 
     override fun onCleared() {
         super.onCleared()
-        Log.d("GameFragment", "GameViewModel destroyed!")
+        Log.d("GameFragment", "com.example.android.unscramble.ui.game.GameViewModel destroyed!")
     }
 
     /*
